@@ -9,10 +9,10 @@ import org.springframework.web.reactive.function.server.coRouter
 class CardResource(private val cardHandler: CardHandler) {
 
     @Bean
-    fun cardEndpoints() = coRouter {
+    fun endpoints() = coRouter {
         accept(APPLICATION_JSON).nest {
             GET("/cartoes/{cardNumber}", cardHandler::getBalance)
-            POST("/cartoes", cardHandler::createCard)
+            POST("/cartoes", cardHandler::create)
         }
     }
 }
