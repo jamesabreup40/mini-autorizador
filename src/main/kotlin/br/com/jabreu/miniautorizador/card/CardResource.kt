@@ -6,13 +6,14 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.reactive.function.server.coRouter
 
 @RestController
-class CardResource(private val cardHandler: CardHandler) {
+class CardResource(private val handler: CardHandler) {
 
     @Bean
     fun endpoints() = coRouter {
         accept(APPLICATION_JSON).nest {
-            GET("/cartoes/{cardNumber}", cardHandler::getBalance)
-            POST("/cartoes", cardHandler::create)
+            GET("/cartoes/{cardNumber}", handler::getBalance)
+            POST("/cartoes", handler::create)
+            POST("/transacoes", handler::transaction)
         }
     }
 }
