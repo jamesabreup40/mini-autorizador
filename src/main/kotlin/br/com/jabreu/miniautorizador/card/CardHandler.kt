@@ -41,17 +41,17 @@ class CardHandler(private val repository: CardRepository) {
                 ?.let { foundCardForTransaction ->
                     foundCardForTransaction.isAValidPassword(requestedTransaction.cardPassword)
                         .takeUnless { it }
-                        ?.let { unprocessableEntity().bodyValueAndAwait(SENHA_INVALIDA) }
+                        ?.let { unprocessableEntity().bodyValueAndAwait(SENHA_INVALIDA.toString()) }
                         ?: foundCardForTransaction.haveBalance(requestedTransaction.amount)
                             .takeUnless { it }
-                            ?.let { unprocessableEntity().bodyValueAndAwait(SALDO_INSUFICIENTE) }
+                            ?.let { unprocessableEntity().bodyValueAndAwait(SALDO_INSUFICIENTE.toString()) }
                         ?: foundCardForTransaction.run {
                             this.withdraw(requestedTransaction.amount)
                             repository.save(foundCardForTransaction)
-                            status(CREATED).bodyValueAndAwait(OK)
+                            status(CREATED).bodyValueAndAwait(OK.toString())
                         }
                 }
-        } ?: unprocessableEntity().bodyValueAndAwait(CARTAO_INEXISTENTE)
+        } ?: unprocessableEntity().bodyValueAndAwait(CARTAO_INEXISTENTE.toString())
 
     private suspend fun cardFromCreateRequest(request: ServerRequest) =
         request.awaitBody<CardDTO>()

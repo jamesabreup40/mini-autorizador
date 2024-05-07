@@ -108,7 +108,7 @@ class CardIT {
             .exchange()
             .expectStatus().is4xxClientError
             .expectBody(String::class.java)
-            .isEqualTo(""""SENHA_INVALIDA"""")
+            .isEqualTo("SENHA_INVALIDA")
     }
 
     @Test
@@ -131,6 +131,26 @@ class CardIT {
             .exchange()
             .expectStatus().is4xxClientError
             .expectBody(String::class.java)
-            .isEqualTo(""""SALDO_INSUFICIENTE"""")
+            .isEqualTo("SALDO_INSUFICIENTE")
+    }
+
+    @Test
+    fun whenTransactionANonExistentCard_thenStatusShouldBeUnprocessableEntityWithExpectResponseBody() {
+        client.post()
+            .uri("/transacoes")
+            .contentType(APPLICATION_JSON)
+            .bodyValue(
+                """
+                {
+                    "numeroCartao": "$randomCardNumber",
+                    "senhaCartao": "1234",
+                    "valor": 500.01
+                }
+                """
+            )
+            .exchange()
+            .expectStatus().is4xxClientError
+            .expectBody(String::class.java)
+            .isEqualTo("CARTAO_INEXISTENTE")
     }
 }
